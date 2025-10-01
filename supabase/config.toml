@@ -1,1 +1,7 @@
 project_id = "ycqrjqqtnjxfezeacozt"
+
+[auth]
+enabled = true
+
+[functions.assess-credit]
+verify_jwt = false

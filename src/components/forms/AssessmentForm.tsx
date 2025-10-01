@@ -134,19 +134,38 @@ export function AssessmentForm() {
     setIsSubmitting(true);
     
     try {
-      // Here you would send the data to your backend
-      // For now, we'll simulate the process
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Call the credit assessment edge function
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/assess-credit`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Assessment failed');
+      }
+
+      const result = await response.json();
       
-      // Clear saved data
+      // Save result to localStorage
+      localStorage.setItem("empowrai-result", JSON.stringify(result));
+      
+      // Clear form data
       localStorage.removeItem("empowrai-assessment");
       localStorage.removeItem("empowrai-step");
       localStorage.removeItem("empowrai-completed");
       
-      // Redirect to results page
+      // Redirect to dashboard
       window.location.href = "/dashboard";
     } catch (error) {
       console.error("Assessment submission failed:", error);
+      alert("Failed to submit assessment. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
