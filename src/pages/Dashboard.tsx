@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, TrendingUp, AlertCircle, CheckCircle, Users, DollarSign, Award, Target } from "lucide-react";
+import { ArrowLeft, TrendingUp, AlertCircle, CheckCircle, Users, DollarSign, Award, Target, Moon, Sun } from "lucide-react";
 
 interface AssessmentResult {
   decision: 'APPROVED' | 'CONDITIONAL' | 'DENIED';
@@ -27,6 +27,17 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [result, setResult] = useState<AssessmentResult | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('dark');
+    }
+    return false;
+  });
+
+  const toggleTheme = () => {
+    setIsDark(!isDark);
+    document.documentElement.classList.toggle('dark');
+  };
 
   useEffect(() => {
     // Load assessment result from localStorage
@@ -107,7 +118,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gradient-subtle">
       {/* Header */}
       <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Button 
             variant="ghost" 
             onClick={() => navigate("/")}
@@ -115,6 +126,18 @@ const Dashboard = () => {
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Home
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleTheme}
+            className="rounded-full"
+          >
+            {isDark ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
           </Button>
         </div>
       </div>
