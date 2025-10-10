@@ -85,7 +85,7 @@ export function Header() {
                 <Link to="/login">Sign In</Link>
               </Button>
               <Button variant="fintech" asChild>
-                <Link to="/register">Get Started</Link>
+                <Link to="/tutorial">Get Started</Link>
               </Button>
             </div>
 
@@ -133,7 +133,7 @@ export function Header() {
                     </Link>
                   </Button>
                   <Button variant="fintech" asChild className="justify-start">
-                    <Link to="/register" onClick={() => setIsMenuOpen(false)}>
+                    <Link to="/tutorial" onClick={() => setIsMenuOpen(false)}>
                       Get Started
                     </Link>
                   </Button>
