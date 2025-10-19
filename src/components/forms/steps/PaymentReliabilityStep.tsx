@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Plus, X, Home, Zap, CreditCard } from "lucide-react";
 import type { PaymentReliability, CreditAssessmentData } from "@/types/empowrai";
+import { DocumentUploadStep } from "./DocumentUploadStep";
 
 interface PaymentReliabilityStepProps {
   data: Partial<CreditAssessmentData>;
@@ -75,8 +76,32 @@ export function PaymentReliabilityStep({ data, updateData, onNext }: PaymentReli
     return "Poor";
   };
 
+  const handlePaymentDocumentData = (data: any) => {
+    if (!data) return;
+    
+    setPaymentInfo(prev => ({
+      ...prev,
+      rent: {
+        ...prev.rent,
+        monthlyAmount: data.monthlyAmount || prev.rent.monthlyAmount,
+        onTimePercentage: data.onTimeRate || prev.rent.onTimePercentage,
+        yearsAtAddress: data.yearsAtAddress || prev.rent.yearsAtAddress,
+      }
+    }));
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Payment History Document Upload */}
+      <DocumentUploadStep
+        title="Upload Payment History Documents"
+        description="Upload rent receipts, lease agreements, or utility bills to verify payment history"
+        icon={<Home className="w-5 h-5 text-primary" />}
+        acceptedTypes={['.pdf', '.png', '.jpg', '.jpeg']}
+        documentType="payment_history"
+        onDataExtracted={handlePaymentDocumentData}
+      />
+
       {/* Rent Payment History */}
       <Card>
         <CardHeader>

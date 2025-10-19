@@ -3,8 +3,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DollarSign, TrendingUp, Calendar } from "lucide-react";
+import { DollarSign, TrendingUp, Calendar, FileText } from "lucide-react";
 import type { FinancialInfo, CreditAssessmentData } from "@/types/empowrai";
+import { DocumentUploadStep } from "./DocumentUploadStep";
 
 interface FinancialInfoStepProps {
   data: Partial<CreditAssessmentData>;
@@ -85,8 +86,32 @@ export function FinancialInfoStep({ data, updateData, onNext }: FinancialInfoSte
     return "text-destructive";
   };
 
+  const handleDocumentData = (data: any) => {
+    if (!data) return;
+    
+    const updates: Partial<FinancialInfo> = {};
+    if (data.monthlyIncome) updates.monthlyIncome = data.monthlyIncome;
+    if (data.creditScore) updates.currentCreditScore = data.creditScore;
+    if (data.employmentStatus) updates.employmentStatus = data.employmentStatus as any;
+    if (data.employmentLength) updates.employmentLength = data.employmentLength;
+    if (data.bankAccountBalance) updates.bankAccountBalance = data.bankAccountBalance;
+    if (data.monthlyExpenses) updates.monthlyExpenses = data.monthlyExpenses;
+    
+    setFinancialInfo(prev => ({ ...prev, ...updates }));
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Document Upload Option */}
+      <DocumentUploadStep
+        title="Upload Financial Documents"
+        description="Upload bank statements, pay stubs, or tax returns for automatic data extraction"
+        icon={<FileText className="w-5 h-5 text-primary" />}
+        acceptedTypes={['.pdf', '.png', '.jpg', '.jpeg']}
+        documentType="financial_info"
+        onDataExtracted={handleDocumentData}
+      />
+
       {/* Income Information */}
       <Card>
         <CardHeader>
@@ -171,12 +196,22 @@ export function FinancialInfoStep({ data, updateData, onNext }: FinancialInfoSte
         </CardContent>
       </Card>
 
+      {/* Document Upload for Credit Reports */}
+      <DocumentUploadStep
+        title="Upload Credit Report or Bank Statement"
+        description="Upload credit reports or bank statements for automatic extraction of credit score and balance"
+        icon={<TrendingUp className="w-5 h-5 text-primary" />}
+        acceptedTypes={['.pdf', '.png', '.jpg', '.jpeg']}
+        documentType="credit_banking"
+        onDataExtracted={handleDocumentData}
+      />
+
       {/* Credit & Banking */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg flex items-center space-x-2">
             <TrendingUp className="w-5 h-5 text-primary" />
-            <span>Credit & Banking</span>
+            <span>Credit & Banking (Or Enter Manually)</span>
           </CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">

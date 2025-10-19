@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, X, Car, Briefcase, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { AlternativeIncome, CreditAssessmentData } from "@/types/empowrai";
+import { DocumentUploadStep } from "./DocumentUploadStep";
 
 interface AlternativeIncomeStepProps {
   data: Partial<CreditAssessmentData>;
@@ -107,8 +108,48 @@ export function AlternativeIncomeStep({ data, updateData, onNext }: AlternativeI
     }));
   };
 
+  const handleGigDocumentData = (data: any) => {
+    if (!data) return;
+    
+    setAltIncome(prev => ({
+      ...prev,
+      gig_work: {
+        ...prev.gig_work,
+        monthlyIncome: data.gigIncome || prev.gig_work.monthlyIncome,
+        platforms: data.platforms || prev.gig_work.platforms,
+        averageRating: data.averageRating || prev.gig_work.averageRating,
+        yearsActive: data.yearsActive || prev.gig_work.yearsActive,
+      }
+    }));
+  };
+
+  const handleBusinessDocumentData = (data: any) => {
+    if (!data) return;
+    
+    setAltIncome(prev => ({
+      ...prev,
+      business: {
+        ...prev.business,
+        hasBusinessRevenue: true,
+        monthlyRevenue: data.businessRevenue || prev.business.monthlyRevenue,
+        businessType: data.businessType || prev.business.businessType,
+        yearsInBusiness: data.yearsInBusiness || prev.business.yearsInBusiness,
+      }
+    }));
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Gig Income Document Upload */}
+      <DocumentUploadStep
+        title="Upload Gig Work Earnings Report"
+        description="Upload earnings statements from platforms like Uber, DoorDash, Upwork, or Fiverr"
+        icon={<Car className="w-5 h-5 text-secondary" />}
+        acceptedTypes={['.pdf', '.png', '.jpg', '.jpeg']}
+        documentType="gig_income"
+        onDataExtracted={handleGigDocumentData}
+      />
+
       {/* Gig Work Income */}
       <Card>
         <CardHeader>
@@ -220,12 +261,22 @@ export function AlternativeIncomeStep({ data, updateData, onNext }: AlternativeI
         </CardContent>
       </Card>
 
+      {/* Business Revenue Document Upload */}
+      <DocumentUploadStep
+        title="Upload Business Financial Documents"
+        description="Upload P&L statements, invoices, or revenue reports for automatic extraction"
+        icon={<Briefcase className="w-5 h-5 text-primary" />}
+        acceptedTypes={['.pdf', '.png', '.jpg', '.jpeg']}
+        documentType="business_revenue"
+        onDataExtracted={handleBusinessDocumentData}
+      />
+
       {/* Business Income */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg flex items-center space-x-2">
             <Briefcase className="w-5 h-5 text-primary" />
-            <span>Business Revenue</span>
+            <span>Business Revenue (Or Enter Manually)</span>
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
