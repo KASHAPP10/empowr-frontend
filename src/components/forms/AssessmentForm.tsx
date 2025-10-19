@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -97,12 +97,12 @@ export function AssessmentForm() {
     localStorage.setItem("empowrai-completed", JSON.stringify(completedSteps));
   }, [formData, currentStep, completedSteps]);
 
-  const updateFormData = (section: keyof CreditAssessmentData, data: any) => {
+  const updateFormData = useCallback((section: keyof CreditAssessmentData, data: any) => {
     setFormData(prev => ({
       ...prev,
       [section]: data
     }));
-  };
+  }, []);
 
   const markStepComplete = (step: number) => {
     if (!completedSteps.includes(step)) {
