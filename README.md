@@ -1,8 +1,7 @@
-# Welcome to your Lovable project
+# EmpowrAI Credit Assessment Frontend
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/47a2286d-1e6a-4327-89d1-666f32fd455e
 
 ## How can I edit this code?
 
